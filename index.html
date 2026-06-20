@@ -159,25 +159,57 @@
     </footer>
     <!-- SCROLL ANIMATION SCRIPT -->
     <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const hiddenElements = document.querySelectorAll('.reveal');
+    document.addEventListener("DOMContentLoaded", function() {
+            
+            // --- 1. MOBILE NAVBAR NAVIGATION LOGIC ---
+            var menuToggle = document.getElementById('menu-toggle');
+            var navLinks = document.getElementById('nav-links');
+            var navItems = document.querySelectorAll('.nav-item');
 
-        // Failsafe 1: Modern Intersection Observer
-        if ('IntersectionObserver' in window) {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('active');
+            if (menuToggle && navLinks) {
+                menuToggle.addEventListener('click', function() {
+                    navLinks.classList.toggle('open');
+                    var icon = menuToggle.querySelector('i');
+                    if (icon) {
+                        icon.classList.toggle('fa-bars');
+                        icon.classList.toggle('fa-times');
                     }
                 });
-            }, { threshold: 0.05 }); // Lower threshold so it triggers sooner
 
-            hiddenElements.forEach((el) => observer.observe(el));
-        } else {
-            // Failsafe 2: Fallback for older configurations
-            hiddenElements.forEach(el => el.classList.add('active'));
-        }
-    });
+                navItems.forEach(function(item) {
+                    item.addEventListener('click', function() {
+                        navLinks.classList.remove('open');
+                        var icon = menuToggle.querySelector('i');
+                        if (icon) {
+                            icon.classList.add('fa-bars');
+                            icon.classList.remove('fa-times');
+                        }
+                    });
+                });
+            }
+
+            // --- 2. SCROLL REVEAL LOGIC ---
+            var hiddenElements = document.querySelectorAll('.reveal');
+
+            if ('IntersectionObserver' in window) {
+                var observer = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(entry) {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('active');
+                        }
+                    });
+                }, { threshold: 0.05 });
+
+                hiddenElements.forEach(function(el) {
+                    observer.observe(el);
+                });
+            } else {
+                hiddenElements.forEach(function(el) {
+                    el.classList.add('active');
+                });
+            }
+
+        }); // Closes DOMContentLoaded listener safely
 </script>
 </body>
 </html>
